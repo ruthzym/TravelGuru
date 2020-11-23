@@ -73,9 +73,20 @@ namespace Saitynai.Repository
         {
             try
             {
-                var filter = Builders<Comment>.Filter.Eq(s => s.PostId, id);
-                var filter2 = Builders<Comment>.Filter.Eq(s => s.Id, commentId);
-                await db.Comment.ReplaceOneAsync(filter & filter2, post);
+                var builder = Builders<Comment>.Filter;
+                var builder0 = Builders<PostComment>.Filter;
+                var filteredPosts = builder0.Eq(x => x.PostId, id);
+                var posts = db.PostComment.Find(filteredPosts).ToList();
+                FilterDefinition<Comment> filtered = null;
+                foreach (var item in posts)
+                {
+                    if (item.CommentId == commentId)
+                    {
+                        filtered = builder.Eq(x => x.Id, commentId);
+                    }
+                }
+
+                await db.Comment.ReplaceOneAsync(filtered, post);
             }
             catch
             {
@@ -100,9 +111,20 @@ namespace Saitynai.Repository
         {
             try
             {
-                var filter = Builders<Comment>.Filter.Eq(s => s.PostId, id);
-                var filter2 = Builders<Comment>.Filter.Eq(s => s.Id, commentId);
-                await db.Comment.DeleteOneAsync(filter & filter2);
+                var builder = Builders<Comment>.Filter;
+                var builder0 = Builders<PostComment>.Filter;
+                var filteredPosts = builder0.Eq(x => x.PostId, id);
+                var posts = db.PostComment.Find(filteredPosts).ToList();
+                FilterDefinition<Comment> filtered = null;
+                foreach (var item in posts)
+                {
+                    if (item.CommentId == commentId)
+                    {
+                        filtered = builder.Eq(x => x.Id, commentId);
+                    }                    
+                }
+
+                await db.Comment.DeleteOneAsync(filtered);
             }
             catch
             {
@@ -114,11 +136,20 @@ namespace Saitynai.Repository
         {
             try
             {
+                var builder = Builders<Comment>.Filter;
+                var builder0 = Builders<PostComment>.Filter;
+                var filteredPosts = builder0.Eq(x => x.PostId, postId);
+                var posts = db.PostComment.Find(filteredPosts).ToList();
+                FilterDefinition<Comment> filtered = null;
+                foreach (var item in posts)
+                {
+                    if (item.CommentId == id)
+                    {
+                        filtered = builder.Eq(x => x.Id, id);
+                    }
+                }
 
-                var filter = Builders<Comment>.Filter.Eq(s => s.PostId, postId);
-                var filter1 = Builders<Comment>.Filter.Eq(s => s.Id, id);
-
-                return await db.Comment.Find(filter & filter1).FirstOrDefaultAsync();
+                return await db.Comment.Find(filtered).FirstOrDefaultAsync();
 
             }
             catch
@@ -131,9 +162,23 @@ namespace Saitynai.Repository
     {
         try
         {
-            FilterDefinition<Comment> filter = Builders<Comment>.Filter.Eq(s => s.PostId, new string(id));
-                return await db.Comment.Find(filter).ToListAsync();
-        }
+                var fil = Builders<PostComment>.Filter.Eq(x => x.PostId, id);
+
+                var rez = db.PostComment.Find(fil).ToList();
+                string[] ids = new string[rez.Count];
+                var builder = Builders<Comment>.Filter;
+                FilterDefinition<Comment>[] filtered = new FilterDefinition<Comment>[rez.Count];
+                for (int i = 0; i < rez.Count; i++)
+                {
+                    ids[i] = rez[i].CommentId;
+                    filtered[i] = builder.Eq(u => u.Id, ids[i]);
+
+                }
+                var newFil = builder.Or(filtered);
+
+                return await  db.Comment.Find(newFil).ToListAsync();
+
+            }
         catch
         {
 
@@ -145,9 +190,13 @@ namespace Saitynai.Repository
         {
             try
             {
-                FilterDefinition<Post> filter = Builders<Post>.Filter.Eq(s => s.Id, new string(id));
-                var update = Builders<Post>.Update.Push(e => e.comments, post);
+                FilterDefinition<Post> filter = Builders<Post>.Filter.Eq(s => s.Id, id);
+                var postCom = new PostComment();                
                 await db.Comment.InsertOneAsync(post);
+
+                postCom.PostId = id;
+                postCom.CommentId = post.Id;
+                await db.PostComment.InsertOneAsync(postCom);                
             }
             catch
             {

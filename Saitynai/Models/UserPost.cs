@@ -11,13 +11,13 @@ namespace Saitynai.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string PostId { get; set; }
-        public Post post { get; set; }
+        public string Id { get; set; }       
 
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("UserId")]
         public string UserId { get; set; }
-        public User user { get; set; }
+
+        [BsonElement("PostId")]
+        public string PostId { get; set; }
 
 
     }

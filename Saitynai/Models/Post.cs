@@ -20,10 +20,6 @@ namespace Saitynai.Models
         public string Body { get; set; }
         [BsonElement("picURL")]
         public string PictureURL { get; set; }
-        [BsonElement("userId")]
-        public string UserId { get; set; }
 
-        [BsonIgnore]
-        public List<Comment> comments { get; set; }
     }
 }

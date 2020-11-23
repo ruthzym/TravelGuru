@@ -84,66 +84,131 @@ namespace Saitynai.Controllers
         [HttpDelete("{id}/post/{postId}/comment/{commentId}")]
         public async Task<IActionResult> DeleteComment(string id, string postId, string commentId)
         {
+            var post = await db.GetUser(id);
+            var comm = await db.GetPost(id, postId);
+            var x = await db.GetPostComment(id, postId, commentId);
+            if (post == null || comm == null || x == null)
+            {
+                return NotFound();
+            }
+            await db.DeletePostComment(id, postId, commentId);
             return Ok();
         }
         // DELETE api/<Users>/5
         [HttpDelete("{id}/post/{postId}")]
         public async Task<IActionResult> DeletePost(string id, string postId)
         {
+            var post = await db.GetUser(id);
+            var comm = await db.GetPost(id, postId);
+            if (post == null || comm == null)
+            {
+                return NotFound();
+            }
+            await db.DeletePost(id, postId);
             return Ok();
         }
 
         // PUT api/<Users>/5
         [HttpPut("{id}/post/{postId}/comment/{commentId}")]
-        public async Task<IActionResult> UpdateComment([FromBody] Comment updatedUser, string id, string postId, string commentId)
+        public async Task<IActionResult> UpdateComment([FromBody] Comment post, string id, string postId, string commentId)
         {
+            if (post == null)
+            {
+                return NotFound();
+            }
+            post.Id = commentId;
+            await db.UpdatePostComment(post, id, postId, commentId);
             return NoContent();
         }
 
         // PUT api/<Users>/5
         [HttpPut("{id}/post/{postId}")]
-        public async Task<IActionResult> UpdatePost([FromBody] Post updatedUser, string id, string postId)
+        public async Task<IActionResult> UpdatePost([FromBody] Post post, string id, string postId)
         {
+            if (post == null)
+            {
+                return NotFound();
+            }
+            post.Id = new string(postId);
+            await db.UpdatePost(post, id, postId);
             return NoContent();
         }
 
         // POST api/<Users>
         [HttpPost("{id}/post/{postId}/comment")]
-        public async Task<IActionResult> CreateComment([FromBody] User user, string id, string postId)
+        public async Task<IActionResult> CreateComment([FromBody] Comment comment, string id, string postId)
         {
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            if (comment.Text == string.Empty)
+            {
+                ModelState.AddModelError("Body", "The body shouldn't be empty");
+            }
+            await db.CreatePostComment(comment, id, postId);
             return Created("Created", true);
         }
         // POST api/<Users>
         [HttpPost("{id}/post")]
-        public async Task<IActionResult> CreatePost([FromBody] User user, string id)
+        public async Task<IActionResult> CreatePost([FromBody] Post post, string id)
         {
+            if (post == null)
+            {
+                return NotFound();
+            }
+            if (post.Body == string.Empty)
+            {
+                ModelState.AddModelError("Body", "The body shouldn't be empty");
+            }
+            await db.CreatePost(post, id);
             return Created("Created", true);
         }
 
         [HttpGet("{id}/post/{postId}/comment")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllComments(string id)
+        public async Task<ActionResult<IEnumerable<Comment>>> GetAllComments(string id, string postId)
         {
-            return Ok();
+            var post = await db.GetUser(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(await db.GetPostComments(id, postId));
         }
 
         // GET api/<Users>/5
         [HttpGet("{id}/post/{postId}/comment/{commentId}")]
-        public async Task<ActionResult<User>> GetUserComment(string id, string postId, string commentId)
+        public async Task<ActionResult<Comment>> GetUserComment(string id, string postId, string commentId)
         {
-            return Ok();
+            var post = await db.GetPostComment(id, postId, commentId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
         }
 
         [HttpGet("{id}/post")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllPosts(string id)
+        public async Task<ActionResult<IEnumerable<Post>>> GetAllPosts(string id)
         {
-            return Ok();
+            var post = await db.GetUser(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(await db.GetPosts(id));
         }
 
         // GET api/<Users>/5
         [HttpGet("{id}/post/{postId}")]
         public async Task<ActionResult<User>> GetUserPost(string id, string postId)
         {
-            return Ok();
+            var post = await db.GetPost(id, postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
         }
     }
 }

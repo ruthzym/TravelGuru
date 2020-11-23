@@ -115,7 +115,6 @@ namespace Saitynai.Controllers
             {
                 ModelState.AddModelError("Body", "The body shouldn't be empty");
             }
-            post.PostId = id;
             await db.CreateComment(post, id);
             return Created("Created", true);
         }

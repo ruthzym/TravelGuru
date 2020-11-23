@@ -48,5 +48,13 @@ namespace Saitynai.Repository
             }
         }
 
+        public IMongoCollection<PostComment> PostComment
+        {
+            get
+            {
+                return mongodb.GetCollection<PostComment>("PostComment");
+            }
+        }
+
     }
 }

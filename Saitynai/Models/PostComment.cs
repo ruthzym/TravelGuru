@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace Saitynai.Models
 {
-    public class Comment
+    public class PostComment
     {
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        [BsonElement("text")]
-        public string Text { get; set; }
-        [BsonElement("date")]
-        public DateTime Date { get; set; }
 
+        [BsonElement("PostId")]
+        public string PostId { get; set; }
 
+        [BsonElement("CommentId")]
+        public string CommentId { get; set; }
     }
 }

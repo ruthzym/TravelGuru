@@ -13,6 +13,7 @@ namespace Saitynai.Repository
         Task Delete(string id);
         Task<Post> GetPost(string id);
         Task<IEnumerable<Post>> GetPosts();
+        //hierarchiniai
         Task<IEnumerable<Comment>> GetComments(string id);
         Task CreateComment(Comment post, string id);
         Task<Comment> GetComment(string postId, string id);
