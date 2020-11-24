@@ -14,26 +14,32 @@ namespace Saitynai.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("name")]
+        [BsonElement("Name")]
         public string Name { get; set; }
 
-        [BsonElement("lastname")]
+        [BsonElement("LastName")]
         public string LastName { get; set; }
 
-        [BsonElement("email")]
+        [BsonElement("Email")]
         public string Email { get; set; }
 
-        [BsonElement("phonenumber")]
-        public string PhoneNumber { get; set; }
-
-        [BsonElement("birthdate")]
+        [BsonElement("BirthDate")]
         public DateTime BirthDate { get; set; }
 
-        [BsonElement("password")]
+        [BsonElement("Username")]
+        public string UserName { get; set; }
+
+        [BsonElement("Password")]
         public string Password { get; set; }
 
-        [BsonElement("username")]
-        public string Username { get; set; }
+        public Role[] Roles { get; set; }
 
+
+    }
+    public enum Role
+    {
+        User,
+        Admin,
+        Guest
     }
 }
