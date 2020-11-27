@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Saitynai.Models;
@@ -18,6 +19,7 @@ namespace Saitynai.Controllers
         ICommentRepository db = new CommentRepository();
 
         // GET: api/<CommentsController>
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetAll()
         {
@@ -25,6 +27,7 @@ namespace Saitynai.Controllers
         }
 
         // GET api/<CommentsController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(string id)
         {
@@ -37,6 +40,7 @@ namespace Saitynai.Controllers
         }
 
         // POST api/<CommentController>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Comment comment)
         {
@@ -53,6 +57,7 @@ namespace Saitynai.Controllers
         }
 
         // PUT api/<CommentController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] Comment comment, string id)
         {
@@ -65,6 +70,7 @@ namespace Saitynai.Controllers
             return NoContent();
         }
         // DELETE api/<CommentController>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

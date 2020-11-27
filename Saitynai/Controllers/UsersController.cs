@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -20,6 +21,7 @@ namespace Saitynai.Controllers
     {
         private IUserRepository db = new UserRepository();
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
@@ -27,6 +29,7 @@ namespace Saitynai.Controllers
         }
 
         // GET api/<Users>/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
@@ -39,6 +42,27 @@ namespace Saitynai.Controllers
         }
 
         // POST api/<Users>
+        [AllowAnonymous]
+        [HttpPost("signup")]
+        public async Task<IActionResult> Signup([FromBody] UserCredentials cred)
+        {
+            User user = new User();
+            if (cred == null)
+            {
+                return NotFound();
+            }
+            if (cred.Email == string.Empty)
+            {
+                ModelState.AddModelError("Name", "The name shouldn't be empty");
+            }
+            user.Email = cred.Email;
+            user.Password = cred.Password;
+            user.UserName = cred.Username;
+            user.Role = "User";
+            await db.Create(user);
+            return Created("Created", true);
+        }
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] User user)
         {
@@ -55,6 +79,7 @@ namespace Saitynai.Controllers
         }
 
         // PUT api/<Users>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] User updatedUser, string id)
         {
@@ -68,6 +93,7 @@ namespace Saitynai.Controllers
         }
 
         // DELETE api/<Users>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -81,6 +107,7 @@ namespace Saitynai.Controllers
         }
         ///*********************************************************************
         // DELETE api/<Users>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}/post/{postId}/comment/{commentId}")]
         public async Task<IActionResult> DeleteComment(string id, string postId, string commentId)
         {
@@ -95,6 +122,7 @@ namespace Saitynai.Controllers
             return Ok();
         }
         // DELETE api/<Users>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}/post/{postId}")]
         public async Task<IActionResult> DeletePost(string id, string postId)
         {
@@ -109,6 +137,7 @@ namespace Saitynai.Controllers
         }
 
         // PUT api/<Users>/5
+        [Authorize]
         [HttpPut("{id}/post/{postId}/comment/{commentId}")]
         public async Task<IActionResult> UpdateComment([FromBody] Comment post, string id, string postId, string commentId)
         {
@@ -122,6 +151,7 @@ namespace Saitynai.Controllers
         }
 
         // PUT api/<Users>/5
+        [Authorize]
         [HttpPut("{id}/post/{postId}")]
         public async Task<IActionResult> UpdatePost([FromBody] Post post, string id, string postId)
         {
@@ -135,6 +165,7 @@ namespace Saitynai.Controllers
         }
 
         // POST api/<Users>
+        [Authorize]
         [HttpPost("{id}/post/{postId}/comment")]
         public async Task<IActionResult> CreateComment([FromBody] Comment comment, string id, string postId)
         {
@@ -150,6 +181,7 @@ namespace Saitynai.Controllers
             return Created("Created", true);
         }
         // POST api/<Users>
+        [Authorize]
         [HttpPost("{id}/post")]
         public async Task<IActionResult> CreatePost([FromBody] Post post, string id)
         {
@@ -164,7 +196,7 @@ namespace Saitynai.Controllers
             await db.CreatePost(post, id);
             return Created("Created", true);
         }
-
+        [Authorize]
         [HttpGet("{id}/post/{postId}/comment")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetAllComments(string id, string postId)
         {
@@ -175,7 +207,7 @@ namespace Saitynai.Controllers
             }
             return Ok(await db.GetPostComments(id, postId));
         }
-
+        [Authorize]
         // GET api/<Users>/5
         [HttpGet("{id}/post/{postId}/comment/{commentId}")]
         public async Task<ActionResult<Comment>> GetUserComment(string id, string postId, string commentId)
@@ -187,7 +219,7 @@ namespace Saitynai.Controllers
             }
             return Ok(post);
         }
-
+        [AllowAnonymous]
         [HttpGet("{id}/post")]
         public async Task<ActionResult<IEnumerable<Post>>> GetAllPosts(string id)
         {
@@ -198,7 +230,7 @@ namespace Saitynai.Controllers
             }
             return Ok(await db.GetPosts(id));
         }
-
+        [AllowAnonymous]
         // GET api/<Users>/5
         [HttpGet("{id}/post/{postId}")]
         public async Task<ActionResult<User>> GetUserPost(string id, string postId)

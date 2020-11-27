@@ -32,14 +32,8 @@ namespace Saitynai.Models
         [BsonElement("Password")]
         public string Password { get; set; }
 
-        public Role[] Roles { get; set; }
+        public string Role { get; set; }
 
 
-    }
-    public enum Role
-    {
-        User,
-        Admin,
-        Guest
     }
 }

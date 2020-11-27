@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Saitynai.Models
 {
-    public static class UserRoles
+    public class UserRoles
     {
         public const string Admin = "Admin";
-        public const string Registered = "Registered";
-        public const string Unregistered = "Unregistered";
+        public const string Registered = "User";
+        public const string Unregistered = "Guest";
     }
 }
