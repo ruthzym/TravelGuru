@@ -23,7 +23,13 @@ namespace Saitynai.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Post>>> GetAll()
         {
-            return Ok(await db.GetPosts());
+            var x = await db.GetPosts();
+            if (x == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(x);
         }
         [AllowAnonymous]
         [HttpGet("{id}")]
@@ -69,7 +75,7 @@ namespace Saitynai.Controllers
         }
 
         // DELETE api/<PostController>/5
-        [Authorize(Roles = UserRoles.Admin + UserRoles.Registered)]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -132,7 +138,12 @@ namespace Saitynai.Controllers
             {
                 return NotFound();
             }
-            return Ok(await db.GetComments(id));
+            var x = await db.GetComments(id);
+            if (x == null)
+            {
+                return NotFound();
+            }
+            return Ok(x);
         }
 
         // GET api/<PostController>/5

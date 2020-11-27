@@ -39,7 +39,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -52,7 +52,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -92,6 +92,10 @@ namespace Saitynai.Repository
                 var fil = Builders<UserPost>.Filter.Eq(x => x.UserId, userId);
 
                 var rez = db.UserPost.Find(fil).ToList();
+                if (rez.Count == 0)
+                {
+                    return null;
+                }
                 var builder = Builders<Post>.Filter;
                 FilterDefinition<Post>[] filtered = new FilterDefinition<Post>[rez.Count];
                 for (int i = 0; i < rez.Count; i++)
@@ -106,7 +110,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -150,7 +154,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -218,6 +222,10 @@ namespace Saitynai.Repository
                 //filter users
                 var filteredPosts = builder0.Eq(x => x.UserId, userId);
                 var posts = db.UserPost.Find(filteredPosts).ToList();
+                if (posts.Count == 0)
+                {
+                    return null;
+                }
                 FilterDefinition<Post> filtered = null;
                 
 
@@ -228,10 +236,21 @@ namespace Saitynai.Repository
                         filtered = builder.Eq(x => x.Id, postId);
                     }
                 }
+                if (filtered == null)
+                {
+                    return null;
+                }
                 var post = db.Post.Find(filtered).ToList();
-
+                if (post.Count == 0)
+                {
+                    return null;
+                }
                 var filPosts = builderpc.Eq(x => x.PostId, post[0].Id);
                 var comms = db.PostComment.Find(filPosts).ToList();
+                if (comms.Count == 0)
+                {
+                    return null;
+                }
                 FilterDefinition<Comment>[] filtered2 = new FilterDefinition<Comment>[comms.Count];
                 for (int i = 0; i < comms.Count; i++)
                 {
@@ -240,7 +259,10 @@ namespace Saitynai.Repository
                         filtered2[i] = bulderc.Eq(x=> x.Id, comms[i].CommentId);
                     }
                 }
-
+                if (filtered2.Length == 0)
+                {
+                    return null;
+                }
                 var final = bulderc.Or(filtered2);
 
                 return await db.Comment.Find(final).ToListAsync();
@@ -249,7 +271,7 @@ namespace Saitynai.Repository
             catch 
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -327,7 +349,7 @@ namespace Saitynai.Repository
             catch 
             {
 
-                throw;
+                return null;
             }
         }
 

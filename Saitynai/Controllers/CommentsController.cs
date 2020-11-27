@@ -23,7 +23,12 @@ namespace Saitynai.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetAll()
         {
-            return Ok(await db.GetComments());
+            var comms = await db.GetComments();
+            if (comms == null)
+            {
+                return NotFound();
+            }
+            return Ok(comms);
         }
 
         // GET api/<CommentsController>/5

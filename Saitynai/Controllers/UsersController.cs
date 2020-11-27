@@ -25,7 +25,12 @@ namespace Saitynai.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            return Ok(await db.GetUsers());
+            var users = await db.GetUsers();
+            if (users == null)
+            {
+                return NotFound();
+            }
+            return Ok(users);
         }
 
         // GET api/<Users>/5
@@ -205,7 +210,12 @@ namespace Saitynai.Controllers
             {
                 return NotFound();
             }
-            return Ok(await db.GetPostComments(id, postId));
+            var all = await db.GetPostComments(id, postId);
+            if (all == null)
+            {
+                return NotFound();
+            }
+            return Ok(all);
         }
         [Authorize]
         // GET api/<Users>/5
@@ -228,7 +238,12 @@ namespace Saitynai.Controllers
             {
                 return NotFound();
             }
-            return Ok(await db.GetPosts(id));
+            var allposts = await db.GetPosts(id);
+            if (allposts == null)
+            {
+                return NotFound();
+            }
+            return Ok(allposts);
         }
         [AllowAnonymous]
         // GET api/<Users>/5

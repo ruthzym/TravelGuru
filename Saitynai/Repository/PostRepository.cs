@@ -37,7 +37,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -50,7 +50,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -155,7 +155,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
         public async Task<IEnumerable<Comment>> GetComments(string id)
@@ -182,7 +182,7 @@ namespace Saitynai.Repository
         catch
         {
 
-            throw;
+                return null;
         }
     }
 

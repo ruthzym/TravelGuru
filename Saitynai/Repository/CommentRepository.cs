@@ -36,7 +36,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
@@ -49,7 +49,7 @@ namespace Saitynai.Repository
             catch
             {
 
-                throw;
+                return null;
             }
         }
 
