@@ -67,9 +67,11 @@ namespace Saitynai.Controllers
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(ClaimTypes.Role, user.Role)
             };
-            claims.Add(new Claim("Role", user.Role));
+
+           // claims.Add(new Claim("Roles", user.Role));
             //foreach (var role in user.Role)
             //{
             //    claims.Add(new Claim("Role", role.ToString()));
